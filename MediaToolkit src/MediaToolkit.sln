@@ -1,34 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaToolkit", "MediaToolkit\MediaToolkit.csproj", "{124AB335-EEAC-416F-B06B-80AD3CF56E38}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaToolkit.Test", "MediaToolkit.Test\MediaToolkit.Test.csproj", "{DD693E7E-1EE1-4506-B062-3761BC13D2D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaToolkit", "MediaToolkit\MediaToolkit.csproj", "{51DEB1EE-0562-409D-AA13-DA3F150215CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		DebugToConsole|Any CPU = DebugToConsole|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{124AB335-EEAC-416F-B06B-80AD3CF56E38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{124AB335-EEAC-416F-B06B-80AD3CF56E38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{124AB335-EEAC-416F-B06B-80AD3CF56E38}.DebugToConsole|Any CPU.ActiveCfg = DebugToConsole|Any CPU
-		{124AB335-EEAC-416F-B06B-80AD3CF56E38}.DebugToConsole|Any CPU.Build.0 = DebugToConsole|Any CPU
-		{124AB335-EEAC-416F-B06B-80AD3CF56E38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{124AB335-EEAC-416F-B06B-80AD3CF56E38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD693E7E-1EE1-4506-B062-3761BC13D2D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD693E7E-1EE1-4506-B062-3761BC13D2D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD693E7E-1EE1-4506-B062-3761BC13D2D6}.DebugToConsole|Any CPU.ActiveCfg = DebugToConsole|Any CPU
-		{DD693E7E-1EE1-4506-B062-3761BC13D2D6}.DebugToConsole|Any CPU.Build.0 = DebugToConsole|Any CPU
-		{DD693E7E-1EE1-4506-B062-3761BC13D2D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD693E7E-1EE1-4506-B062-3761BC13D2D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51DEB1EE-0562-409D-AA13-DA3F150215CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51DEB1EE-0562-409D-AA13-DA3F150215CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51DEB1EE-0562-409D-AA13-DA3F150215CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51DEB1EE-0562-409D-AA13-DA3F150215CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D751528-A742-421C-8227-17B62C7000B0}
 	EndGlobalSection
 	GlobalSection(CodealikeProperties) = postSolution
 		SolutionGuid = 27b6e555-e1d3-4bc8-80b8-643a861a9917
