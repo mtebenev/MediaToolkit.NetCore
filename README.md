@@ -1,5 +1,15 @@
-MediaToolkit
+MediaToolkit.NetCore
 ============
+
+This is port of MediaToolkit to .Net Core
+---
+
+Notable changes are:
+1. Projects are compiled with VS2017 using .Net Core
+2. ffmpeg.exe is not embedded in library binaries, you should pass a path to ffmpeg.exe explicitly in constructor
+
+From MediaToolkit
+---
 
 MediaToolkit provides a straightforward interface for handling media data, making tasks such as converting, slicing and editing both audio and video completely effortless.
 
@@ -41,11 +51,11 @@ Install MediaToolkit from NuGet using the Package Manager Console with the follo
 Samples
 -------
 
-- [Retrieve metadata](#retrieve-metadata)  
-- [Perform basic video conversions](#basic-conversion)  
+- [Retrieve metadata](#retrieve-metadata)
+- [Perform basic video conversions](#basic-conversion)
 - [Grab thumbnail] (#grab-thumbnail-from-a-video)
-- [Convert from FLV to DVD](#convert-flash-video-to-dvd)  
-- [Convert FLV to MP4 using various transcoding options](#transcoding-options-flv-to-mp4)  
+- [Convert from FLV to DVD](#convert-flash-video-to-dvd)
+- [Convert FLV to MP4 using various transcoding options](#transcoding-options-flv-to-mp4)
 - [Cut / split video] (#cut-video-down-to-smaller-length)
 - [Subscribing to events](#subscribe-to-events)
 
@@ -57,7 +67,7 @@ Samples
     using (var engine = new Engine())
     {
         engine.GetMetadata(inputFile);
-        
+
         // Saves the frame located on the 15th second of the video.
         var options = new ConversionOptions { Seek = TimeSpan.FromSeconds(15) };
         engine.GetThumbnail(inputFile, outputFile, options);
@@ -71,7 +81,7 @@ Samples
     {
         engine.GetMetadata(inputFile);
     }
-    
+
     Console.WriteLine(inputFile.Metadata.Duration);
 
 ### Basic conversion
@@ -91,7 +101,7 @@ Samples
 
     var conversionOptions = new ConversionOptions
     {
-        Target = Target.DVD, 
+        Target = Target.DVD,
         TargetStandard = TargetStandard.PAL
     };
 
@@ -128,8 +138,8 @@ Samples
         engine.GetMetadata(inputFile);
 
         var options = new ConversionOptions();
-        
-        // This example will create a 25 second video, starting from the 
+
+        // This example will create a 25 second video, starting from the
         // 30th second of the original video.
         //// First parameter requests the starting frame to cut the media from.
         //// Second parameter requests how long to cut the video.
@@ -145,7 +155,7 @@ Samples
     {
         var inputFile = new MediaFile {Filename = @"C:\Path\To_Video.flv"};
         var outputFile = new MediaFile {Filename = @"C:\Path\To_Save_New_Video.mp4"};
-        
+
         using (var engine = new Engine())
         {
             engine.ConvertProgressEvent += ConvertProgressEvent;
@@ -164,7 +174,7 @@ Samples
         Console.WriteLine("SizeKb: {0}", e.SizeKb);
         Console.WriteLine("TotalDuration: {0}\n", e.TotalDuration);
     }
-    
+
     private void engine_ConversionCompleteEvent(object sender, ConversionCompleteEventArgs e)
     {
         Console.WriteLine("\n------------\nConversion complete!\n------------");
@@ -178,7 +188,7 @@ Samples
 
 
 Licensing
----------  
+---------
 - MediaToolkit is licensed under the [MIT license](https://github.com/AydinAdn/MediaToolkit/blob/master/LICENSE.md)
 - MediaToolkit uses [FFmpeg](http://ffmpeg.org), a multimedia framework which is licensed under the [LGPLv2.1 license](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html), its source can be downloaded from [here](https://github.com/AydinAdn/MediaToolkit/tree/master/FFmpeg%20src)
 

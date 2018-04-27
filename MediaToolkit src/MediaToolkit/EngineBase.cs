@@ -1,15 +1,14 @@
-﻿namespace MediaToolkit
-{
-    using System;
-    using System.Configuration;
-    using System.Diagnostics;
-    using System.IO;
-    using System.IO.Compression;
-    using System.Reflection;
-    using System.Threading;
+    
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
 
-    using MediaToolkit.Properties;
-    using MediaToolkit.Util;
+using MediaToolkit.Properties;
+using MediaToolkit.Util;
+
+namespace MediaToolkit
+{
 
     public class EngineBase : IDisposable
     {
@@ -28,12 +27,6 @@
 
         /// <summary>   The ffmpeg process. </summary>
         protected Process FFmpegProcess;
-
-
-         protected EngineBase()
-            : this(ConfigurationManager.AppSettings["mediaToolkit.ffmpeg.path"])
-        {
-        }
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>
@@ -89,30 +82,9 @@
         {
             if (!File.Exists(this.FFmpegFilePath))
             {
-                UnpackFFmpegExecutable(this.FFmpegFilePath);
+                throw new InvalidOperationException("Unable to locate ffmpeg executable. Make sure it exists at path passed to Engine constructor");
             }
         }
-
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Unpack ffmpeg executable. </summary>
-        /// <exception cref="Exception">    Thrown when an exception error condition occurs. </exception>
-        private static void UnpackFFmpegExecutable(string path)
-        {
-            Stream compressedFFmpegStream = Assembly.GetExecutingAssembly()
-                                                    .GetManifestResourceStream(Resources.FFmpegManifestResourceName);
-
-            if (compressedFFmpegStream == null)
-            {
-                throw new Exception(Resources.Exceptions_Null_FFmpeg_Gzip_Stream);
-            }
-
-            using (FileStream fileStream = new FileStream(path, FileMode.Create))
-            using (GZipStream compressedStream = new GZipStream(compressedFFmpegStream, CompressionMode.Decompress))
-            {
-                compressedStream.CopyTo(fileStream);
-            }
-        }
-
 
 
         ///-------------------------------------------------------------------------------------------------

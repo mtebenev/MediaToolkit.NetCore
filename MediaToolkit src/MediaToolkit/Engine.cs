@@ -1,4 +1,4 @@
-﻿namespace MediaToolkit
+namespace MediaToolkit
 {
     using System;
     using System.Collections.Generic;
@@ -20,14 +20,8 @@
         /// </summary>
         public event EventHandler<ConversionCompleteEventArgs> ConversionCompleteEvent;
 
-        public Engine()
-        {
-            
-        }
-
         public Engine(string ffMpegPath) : base(ffMpegPath)
         {
-            
         }
 
         /// -------------------------------------------------------------------------------------------------
