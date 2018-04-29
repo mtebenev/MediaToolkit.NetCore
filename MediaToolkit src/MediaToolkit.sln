@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaToolkit", "MediaToolkit\MediaToolkit.csproj", "{51DEB1EE-0562-409D-AA13-DA3F150215CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{2D44C304-860B-47C4-A385-2B9A1D6CAE15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "SampleApp\SampleApp.csproj", "{2D44C304-860B-47C4-A385-2B9A1D6CAE15}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaToolkit.Test", "MediaToolkit.Test\MediaToolkit.Test.csproj", "{0767521D-0850-4221-80D0-0FC23ECE79D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2D44C304-860B-47C4-A385-2B9A1D6CAE15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D44C304-860B-47C4-A385-2B9A1D6CAE15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D44C304-860B-47C4-A385-2B9A1D6CAE15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0767521D-0850-4221-80D0-0FC23ECE79D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0767521D-0850-4221-80D0-0FC23ECE79D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0767521D-0850-4221-80D0-0FC23ECE79D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0767521D-0850-4221-80D0-0FC23ECE79D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

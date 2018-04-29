@@ -1,0 +1,23 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <AspNetCoreVersion>2.0.0</AspNetCoreVersion>
+    <RuntimeFrameworkVersion Condition="'$(TargetFramework)'=='netcoreapp2.0'">2.0.0</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageVersion>0.1.0-preview</PackageVersion>
+    <PackageProjectUrl>https://github.com/mtebenev/MediaToolkit</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/mtebenev/MediaToolkit/blob/master/LICENSE.md</PackageLicenseUrl>
+    <Authors>Maxim Tebenev</Authors>
+    <Copyright>Maxim Tebenev, 2018</Copyright>
+    <PackageTags>MediaToolkit, Media, Video, Audio, converter, ffmpeg, flv, mp4, flash, h264, hd, 720p, 1080p, dvd</PackageTags>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugType>portable</DebugType>
+    <NetStandardImplicitPackageVersion>2.0.0-*</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+</Project>

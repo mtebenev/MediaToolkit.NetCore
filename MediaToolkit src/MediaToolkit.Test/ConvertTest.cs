@@ -1,18 +1,21 @@
-﻿using MediaToolkit.Model;
+using MediaToolkit.Model;
 using MediaToolkit.Options;
-using NUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using Xunit;
 
 namespace MediaToolkit.Test
 {
-    [TestFixture]
     public class ConvertTest
     {
-        [TestFixtureSetUp]
-        public void Init()
+        private string _inputFilePath = "";
+        private string _inputUrlPath = "";
+        private string _outputFilePath = "";
+        private bool _printToConsoleEnabled;
+
+        public ConvertTest()
         {
             // Raise progress events?
             _printToConsoleEnabled = true;
@@ -30,29 +33,21 @@ namespace MediaToolkit.Test
                 return;
             }
 
-            var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
-            Debug.Assert(directoryInfo.Parent != null, "directoryInfo.Parent != null");
+            var testAssetsPath = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestVideo");
+            var testAssetsFullPath = Path.GetFullPath(testAssetsPath);
 
-            DirectoryInfo testDirectoryInfo = directoryInfo.Parent.Parent;
-            Debug.Assert(testDirectoryInfo != null, "testDirectoryInfo != null");
+            if(!Directory.Exists(testAssetsFullPath))
+                throw new InvalidOperationException($"Directory not found: {testAssetsFullPath}");
 
-            string testDirectoryPath = testDirectoryInfo.FullName + @"\TestVideo\";
-
-            Debug.Assert(Directory.Exists(testDirectoryPath), "Directory not found: " + testDirectoryPath);
-            Debug.Assert(File.Exists(testDirectoryPath + @"BigBunny.m4v"),
-                "Test file not found: " + testDirectoryPath + @"BigBunny.m4v");
-
-            _inputFilePath = testDirectoryPath + @"BigBunny.m4v";
+            _inputFilePath = $@"{testAssetsFullPath}\BigBunny.m4v";
             _inputUrlPath = @"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-            _outputFilePath = testDirectoryPath + @"OuputBunny.mp4";
+            _outputFilePath = $@"{testAssetsFullPath}\OuputBunny.mp4";
+
+            if(!File.Exists(_inputFilePath))
+                throw new InvalidOperationException($@"Test file not found: {_inputFilePath}");
         }
 
-        private string _inputFilePath = "";
-        private string _inputUrlPath = "";
-        private string _outputFilePath = "";
-        private bool _printToConsoleEnabled;
-
-        [TestCase]
+        [Fact]
         public void Can_CutVideo()
         {
             string filePath = @"{0}\Cut_Video_Test.mp4";
@@ -75,13 +70,13 @@ namespace MediaToolkit.Test
                 engine.GetMetadata(outputFile);
             }
             
-            Assert.That(File.Exists(outputPath));
+            Assert.True(File.Exists(outputPath));
             // Input file is 33 seconds long, seeking to the 30th second and then 
             // attempting to cut another 25 seconds isn't possible as there's only 3 seconds
             // of content length, so instead the library cuts the maximumum possible.
         }
 
-        [TestCase]
+        [Fact]
         public void Can_CropVideo()
         {
             string outputPath = string.Format(@"{0}\Crop_Video_Test.mp4", Path.GetDirectoryName(_outputFilePath));
@@ -109,7 +104,7 @@ namespace MediaToolkit.Test
             }
         }
 
-        [TestCase]
+        [Fact]
         public void Can_GetThumbnail()
         {
             string outputPath = string.Format(@"{0}\Get_Thumbnail_Test.jpg", Path.GetDirectoryName(_outputFilePath));
@@ -120,10 +115,8 @@ namespace MediaToolkit.Test
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var localMediaToolkitFfMpeg = Path.Combine(localAppData, "MediaToolkit", "ffmpeg.exe");
 
-            using (var engine = new Engine(localMediaToolkitFfMpeg))
+            using (var engine = new Engine())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -136,10 +129,10 @@ namespace MediaToolkit.Test
                 };
                 engine.GetThumbnail(inputFile, outputFile, options);
             }
-            Assert.That(File.Exists(outputPath));
+            Assert.True(File.Exists(outputPath));
         }
 
-        [TestCase]
+        [Fact]
         public void Can_GetThumbnailFromHTTPLink()
         {
             string outputPath = string.Format(@"{0}\Get_Thumbnail_FromHTTP_Test.jpg", Path.GetDirectoryName(_outputFilePath));
@@ -162,7 +155,7 @@ namespace MediaToolkit.Test
             }
         }
 
-        [TestCase]
+        [Fact]
         public void Can_GetMetadata()
         {
             var inputFile = new MediaFile { Filename = _inputFilePath };
@@ -189,7 +182,7 @@ namespace MediaToolkit.Test
             PrintMetadata(inputMeta);
         }
 
-        [TestCase]
+        [Fact]
         public void Can_ConvertBasic()
         {
             string outputPath = string.Format(@"{0}\Convert_Basic_Test.avi", Path.GetDirectoryName(_outputFilePath));
@@ -215,7 +208,7 @@ namespace MediaToolkit.Test
             PrintMetadata(outputMeta);
         }
 
-        [TestCase]
+        [Fact]
         public void Can_ConvertToGif()
         {
             string outputPath = string.Format(@"{0}\Convert_GIF_Test.gif", Path.GetDirectoryName(_outputFilePath));
@@ -242,7 +235,7 @@ namespace MediaToolkit.Test
         }
 
 
-        [TestCase]
+        [Fact]
         public void Can_ConvertToDVD()
         {
             string outputPath = string.Format("{0}/Convert_DVD_Test.vob", Path.GetDirectoryName(_outputFilePath));
@@ -267,7 +260,7 @@ namespace MediaToolkit.Test
             PrintMetadata(outputFile.Metadata);
         }
 
-        [TestCase]
+        [Fact]
         public void Can_TranscodeUsingConversionOptions()
         {
             string outputPath = string.Format("{0}/Transcode_Test.avi", Path.GetDirectoryName(_outputFilePath));
@@ -287,7 +280,7 @@ namespace MediaToolkit.Test
                 engine.Convert(inputFile, outputFile, conversionOptions);
         }
 
-        [TestCase]
+        [Fact]
         public void Can_ScaleDownPreservingAspectRatio()
         {
             string outputPath = string.Format(@"{0}\Convert_Basic_Test.mp4", Path.GetDirectoryName(_outputFilePath));
@@ -305,7 +298,7 @@ namespace MediaToolkit.Test
                 engine.GetMetadata(outputFile);
             }
 
-            Assert.AreEqual("214x120", outputFile.Metadata.VideoData.FrameSize);
+            Assert.Equal("214x120", outputFile.Metadata.VideoData.FrameSize);
 
             PrintMetadata(inputFile.Metadata);
             PrintMetadata(outputFile.Metadata);

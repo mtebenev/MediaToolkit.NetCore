@@ -1,17 +1,13 @@
-﻿using MediaToolkit.Model;
-using NUnit.Framework;
+using MediaToolkit.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Xunit;
 
 namespace MediaToolkit.Test.Util
 {
-    [TestFixture]
     public class RegexEngineTest
     {
-        [TestCase]
+        [Fact]
         public void TestVideo_VideoStreamInformationWithoutFPS_IsIgnored()
         {
             // this throws on before the patch
