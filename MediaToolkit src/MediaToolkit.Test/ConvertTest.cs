@@ -4,10 +4,26 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using AutoFixture;
 using Xunit;
 
 namespace MediaToolkit.Test
 {
+    /// <summary>
+    /// Abstracts engine creation
+    /// </summary>
+    internal class EngineCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
+            fixture.Customize<Engine>(c =>
+                c.FromFactory(() =>
+                {
+                    return new Engine(@"C:\ffmpeg\FFmpeg.exe");
+                }));
+        }
+    }
+
     public class ConvertTest
     {
         private string _inputFilePath = "";
@@ -41,7 +57,13 @@ namespace MediaToolkit.Test
 
             _inputFilePath = $@"{testAssetsFullPath}\BigBunny.m4v";
             _inputUrlPath = @"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-            _outputFilePath = $@"{testAssetsFullPath}\OuputBunny.mp4";
+
+            // Note: assuming that tests executed from bin folder
+            var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"TestOutput");
+            if(!Directory.Exists(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+
+            _outputFilePath = $@"{outputDirectory}\OuputBunny.mp4";
 
             if(!File.Exists(_inputFilePath))
                 throw new InvalidOperationException($@"Test file not found: {_inputFilePath}");
@@ -50,13 +72,16 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_CutVideo()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string filePath = @"{0}\Cut_Video_Test.mp4";
             string outputPath = string.Format(filePath, Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
 
-            using (var engine = new Engine())
+            using (var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -79,12 +104,15 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_CropVideo()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format(@"{0}\Crop_Video_Test.mp4", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -107,6 +135,9 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_GetThumbnail()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format(@"{0}\Get_Thumbnail_Test.jpg", Path.GetDirectoryName(_outputFilePath));
             if (File.Exists(outputPath))
             {
@@ -116,7 +147,7 @@ namespace MediaToolkit.Test
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -135,12 +166,15 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_GetThumbnailFromHTTPLink()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format(@"{0}\Get_Thumbnail_FromHTTP_Test.jpg", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputUrlPath };
             var outputFile = new MediaFile { Filename = outputPath };
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -158,9 +192,12 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_GetMetadata()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             var inputFile = new MediaFile { Filename = _inputFilePath };
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
                 engine.GetMetadata(inputFile);
 
             Metadata inputMeta = inputFile.Metadata;
@@ -185,13 +222,16 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_ConvertBasic()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format(@"{0}\Convert_Basic_Test.avi", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
 
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -211,13 +251,16 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_ConvertToGif()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format(@"{0}\Convert_GIF_Test.gif", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
 
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -238,6 +281,9 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_ConvertToDVD()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format("{0}/Convert_DVD_Test.vob", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
@@ -245,7 +291,7 @@ namespace MediaToolkit.Test
 
             var conversionOptions = new ConversionOptions { Target = Target.DVD, TargetStandard = TargetStandard.PAL };
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -263,6 +309,9 @@ namespace MediaToolkit.Test
         [Fact]
         public void Can_TranscodeUsingConversionOptions()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format("{0}/Transcode_Test.avi", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
@@ -276,19 +325,24 @@ namespace MediaToolkit.Test
             };
 
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
+            {
                 engine.Convert(inputFile, outputFile, conversionOptions);
+            }
         }
 
         [Fact]
         public void Can_ScaleDownPreservingAspectRatio()
         {
+            var fixture = new Fixture()
+                .Customize(new EngineCustomization());
+
             string outputPath = string.Format(@"{0}\Convert_Basic_Test.mp4", Path.GetDirectoryName(_outputFilePath));
 
             var inputFile = new MediaFile { Filename = _inputFilePath };
             var outputFile = new MediaFile { Filename = outputPath };
 
-            using (var engine = new Engine())
+            using(var engine = fixture.Create<Engine>())
             {
                 engine.ConvertProgressEvent += engine_ConvertProgressEvent;
                 engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
