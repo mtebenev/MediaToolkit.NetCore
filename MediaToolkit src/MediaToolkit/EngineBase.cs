@@ -1,15 +1,12 @@
-    
 using System;
 using System.Diagnostics;
-using System.IO;
+using System.IO.Abstractions;
 using System.Threading;
-
 using MediaToolkit.Properties;
 using MediaToolkit.Util;
 
 namespace MediaToolkit
 {
-
     public class EngineBase : IDisposable
     {
         private bool isDisposed;
@@ -17,10 +14,9 @@ namespace MediaToolkit
         /// <summary>   Used for locking the FFmpeg process to one thread. </summary>
         private const string LockName = "MediaToolkit.Engine.LockName";
 
-        private const string DefaultFFmpegFilePath = @"/MediaToolkit/ffmpeg.exe";
+        private readonly string _ffprobeFilePath;
 
-        /// <summary>   Full pathname of the FFmpeg file. </summary>
-        protected readonly string FFmpegFilePath;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>   The Mutex. </summary>
         protected readonly Mutex Mutex;
@@ -28,27 +24,29 @@ namespace MediaToolkit
         /// <summary>   The ffmpeg process. </summary>
         protected Process FFmpegProcess;
 
-        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     <para> Initializes FFmpeg.exe; Ensuring that there is a copy</para>
-        ///     <para> in the clients temp folder &amp; isn't in use by another process.</para>
+        /// Initializes FFmpeg.exe; Ensuring that there is a copy in the clients temp folder &amp; isn't in use by another process.
+        /// Assumes that ffprobe located in the same directory as ffmpeg
         /// </summary>
-        protected EngineBase(string ffMpegPath)
+        protected EngineBase(string ffMpegPath, IFileSystem fileSystem)
         {
-            this.Mutex = new Mutex(false, LockName);
-            this.isDisposed = false;
+            _fileSystem = fileSystem;
+            Mutex = new Mutex(false, LockName);
+            isDisposed = false;
 
-            if (ffMpegPath.IsNullOrWhiteSpace())
-            {
-                ffMpegPath = DefaultFFmpegFilePath;
-            }
+            if(ffMpegPath.IsNullOrWhiteSpace())
+                throw new ArgumentException(nameof(ffMpegPath));
 
-            this.FFmpegFilePath = ffMpegPath;
+            FfmpegFilePath = ffMpegPath;
+            var ffmpegDirectoryPath = _fileSystem.FileInfo.FromFileName(ffMpegPath).DirectoryName;
+            FfprobeFilePath = _fileSystem.Path.Combine(ffmpegDirectoryPath, "ffprobe.exe");
 
-            this.EnsureDirectoryExists ();
-            this.EnsureFFmpegFileExists();
-            this.EnsureFFmpegIsNotUsed ();
+            EnsureFFmpegFileExists();
+            EnsureFFmpegIsNotUsed();
         }
+
+        public string FfmpegFilePath { get; }
+        public string FfprobeFilePath { get; }
 
         private void EnsureFFmpegIsNotUsed()
         {
@@ -56,11 +54,11 @@ namespace MediaToolkit
             {
                 this.Mutex.WaitOne();
                 Process.GetProcessesByName(Resources.FFmpegProcessName)
-                       .ForEach(process =>
-                       {
-                           process.Kill();
-                           process.WaitForExit();
-                       });
+                    .ForEach(process =>
+                    {
+                        process.Kill();
+                        process.WaitForExit();
+                    });
             }
             finally
             {
@@ -68,22 +66,13 @@ namespace MediaToolkit
             }
         }
 
-        private void EnsureDirectoryExists()
-        {
-            string directory = Path.GetDirectoryName(this.FFmpegFilePath) ?? Directory.GetCurrentDirectory(); ;
-
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-        }
-
         private void EnsureFFmpegFileExists()
         {
-            if (!File.Exists(this.FFmpegFilePath))
-            {
+            if(!_fileSystem.File.Exists(FfmpegFilePath))
                 throw new InvalidOperationException("Unable to locate ffmpeg executable. Make sure it exists at path passed to Engine constructor");
-            }
+
+            if(!_fileSystem.File.Exists(FfprobeFilePath))
+                throw new InvalidOperationException("Unable to locate ffprobe executable. Make sure it exists at path passed to Engine constructor");
         }
 
 
@@ -100,7 +89,7 @@ namespace MediaToolkit
 
         private void Dispose(bool disposing)
         {
-            if (!disposing || this.isDisposed)
+            if(!disposing || this.isDisposed)
             {
                 return;
             }
@@ -108,7 +97,8 @@ namespace MediaToolkit
             if(FFmpegProcess != null)
             {
                 this.FFmpegProcess.Dispose();
-            }            
+            }
+
             this.FFmpegProcess = null;
             this.isDisposed = true;
         }

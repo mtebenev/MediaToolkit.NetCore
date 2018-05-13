@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using MediaToolkit;
 using MediaToolkit.Model;
 
@@ -13,7 +14,7 @@ namespace SampleApp
             var videoPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\BigBunny.m4v");
             var inputFile = new MediaFile {Filename = videoPath};
 
-            using(var engine = new Engine(@"C:\ffmpeg\FFmpeg.exe"))
+            using(var engine = new Engine(@"C:\ffmpeg\FFmpeg.exe", new FileSystem()))
             {
                 engine.GetMetadata(inputFile);
             }

@@ -1,7 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageId>MediaToolkit.NetCore</PackageId>
+    <PackageDescription>MediaToolkit port to .Net Core</PackageDescription>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>MediaToolkit</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MedallionShell" Version="1.5.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="2.1.0.178" />
+  </ItemGroup>
 </Project>

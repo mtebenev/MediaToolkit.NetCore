@@ -5,25 +5,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using AutoFixture;
+using MediaToolkit.Test.Testing;
 using Xunit;
 
 namespace MediaToolkit.Test
 {
-    /// <summary>
-    /// Abstracts engine creation
-    /// </summary>
-    internal class EngineCustomization : ICustomization
-    {
-        public void Customize(IFixture fixture)
-        {
-            fixture.Customize<Engine>(c =>
-                c.FromFactory(() =>
-                {
-                    return new Engine(@"C:\ffmpeg\FFmpeg.exe");
-                }));
-        }
-    }
-
     public class ConvertTest
     {
         private string _inputFilePath = "";
