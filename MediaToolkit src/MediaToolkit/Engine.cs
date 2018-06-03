@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Medallion.Shell;
 using MediaToolkit.Model;
 using MediaToolkit.Options;
 using MediaToolkit.Properties;
 using MediaToolkit.Util;
+using Newtonsoft.Json;
 
 namespace MediaToolkit
 {
@@ -71,32 +74,37 @@ namespace MediaToolkit
         public void CustomCommand(string ffmpegCommand)
         {
             if(ffmpegCommand.IsNullOrWhiteSpace())
-            {
-                throw new ArgumentNullException("ffmpegCommand");
-            }
+                throw new ArgumentNullException(nameof(ffmpegCommand));
 
             EngineParameters engineParameters = new EngineParameters {CustomArguments = ffmpegCommand};
 
             this.StartFFmpegProcess(engineParameters);
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     <para> Retrieve media metadata</para>
+        /// Retrieves metadata using ffprobe
         /// </summary>
-        /// <param name="inputFile">    Retrieves the metadata for the input file. </param>
-        public void GetMetadata(MediaFile inputFile)
+        public async Task<FfprobeType> GetMetadataAsync(string filePath)
         {
-            EngineParameters engineParams = new EngineParameters
+            var arguments = new Object[]
             {
-                InputFile = inputFile,
-                Task = FFmpegTask.GetMetaData
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_format",
+                "-show_streams",
+                filePath
             };
 
-            this.FFmpegEngine(engineParams);
+            var cmd = Command.Run(FfprobeFilePath, arguments);
+            await cmd.Task;
+
+            var output = await cmd.StandardOutput.ReadToEndAsync();
+            var ffprobeType = JsonConvert.DeserializeObject<FfprobeType>(output);
+            return ffprobeType;
         }
 
-        /// -------------------------------------------------------------------------------------------------
         /// <summary>   Retrieve a thumbnail image from a video file. </summary>
         /// <param name="inputFile">    Video file. </param>
         /// <param name="outputFile">   Image file. </param>

@@ -1,0 +1,6 @@
+Generate serializable class for ffprobe metadata:
+ffprobe.xsd can be obtained from source code
+Used dotnet-xscgen (https://github.com/mganss/XmlSchemaClassGenerator) for generation
+
+Example:
+C:\working\xscgen\dotnet-xscgen.exe C:\ffmpeg\doc\ffprobe.xsd -c -o=.\MediaToolkit\Model -n="http://www.ffmpeg.org/schema/ffprobe=MediaToolkit.Model"
