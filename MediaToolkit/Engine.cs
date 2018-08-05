@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Medallion.Shell;
 using MediaToolkit.Model;
 using MediaToolkit.Options;
 using MediaToolkit.Properties;
 using MediaToolkit.Util;
-using Newtonsoft.Json;
 
 namespace MediaToolkit
 {
@@ -91,7 +91,7 @@ namespace MediaToolkit
                 "-v",
                 "quiet",
                 "-print_format",
-                "json",
+                "xml=fully_qualified=1",
                 "-show_format",
                 "-show_streams",
                 filePath
@@ -101,7 +101,13 @@ namespace MediaToolkit
             await cmd.Task;
 
             var output = await cmd.StandardOutput.ReadToEndAsync();
-            var ffprobeType = JsonConvert.DeserializeObject<FfprobeType>(output);
+            var serializer = new XmlSerializer(typeof(FfprobeType));
+            FfprobeType ffprobeType;
+            using(var stringReader = new StringReader(output))
+            {
+                ffprobeType = (FfprobeType) serializer.Deserialize(stringReader);
+            }
+
             return ffprobeType;
         }
 
