@@ -1,7 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Medallion.Shell;
 using MediaToolkit.Core;
 using MediaToolkit.Model;
 
@@ -20,13 +19,13 @@ namespace MediaToolkit.Tasks
     {
       var arguments = new[]
       {
-                "-v",
-                "quiet",
-                "-print_format",
-                "xml=fully_qualified=1",
-                "-show_format",
-                "-show_streams",
-                this._filePath
+        "-v",
+        "quiet",
+        "-print_format",
+        "xml=fully_qualified=1",
+        "-show_format",
+        "-show_streams",
+        this._filePath
       };
       return arguments;
     }

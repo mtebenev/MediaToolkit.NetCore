@@ -19,7 +19,10 @@ namespace MediaToolkit.Services
       this._processFactory = processFactory;
     }
 
-    public static IFfService CreateFfService()
+    /// <summary>
+    /// Factory method.
+    /// </summary>
+    public static IFfService CreateInstance()
     {
       var ffProcessFactory = new FfProcessFactory();
       var result = new FfService(ffProcessFactory);
@@ -48,7 +51,10 @@ namespace MediaToolkit.Services
     /// </summary>
     internal Task ExecuteAsync(FfMpegTaskBase task)
     {
-      return Task.CompletedTask;
+      var arguments = task.CreateArguments();
+      var ffProcess = this._processFactory.LaunchFfMpeg(arguments);
+
+      return task.ExecuteCommandAsync(ffProcess);
     }
   }
 }
