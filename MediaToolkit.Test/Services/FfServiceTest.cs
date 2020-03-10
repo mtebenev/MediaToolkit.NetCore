@@ -12,7 +12,7 @@ namespace MediaToolkit.Test.Services
     [Fact]
     public async Task Should_Start_FfProbe()
     {
-      var mockFfProbeTask = Substitute.For<FfProbeTaskBase>();
+      var mockFfProbeTask = Substitute.For<FfProbeTaskBase<int>>();
       var mockProcessFactory = Substitute.For<IffProcessFactory>();
       var mockFfProcess = Substitute.For<IFfProcess>();
 
@@ -34,7 +34,7 @@ namespace MediaToolkit.Test.Services
     [Fact]
     public async Task Should_Start_FfMpeg()
     {
-      var mockFfMpegTask = Substitute.For<FfMpegTaskBase>();
+      var mockFfMpegTask = Substitute.For<FfMpegTaskBase<int>>();
       var mockProcessFactory = Substitute.For<IffProcessFactory>();
       var mockFfProcess = Substitute.For<IFfProcess>();
 

@@ -7,7 +7,7 @@ namespace MediaToolkit.Tasks
   /// </summary>
   public class GetMetadataResult
   {
-    public GetMetadataResult(FfprobeType metadata)
+    public GetMetadataResult(FfProbeOutput metadata)
     {
       this.Metadata = metadata;
     }
@@ -15,6 +15,6 @@ namespace MediaToolkit.Tasks
     /// <summary>
     /// The result metadata.
     /// </summary>
-    public FfprobeType Metadata { get; private set; }
+    public FfProbeOutput Metadata { get; private set; }
   }
 }

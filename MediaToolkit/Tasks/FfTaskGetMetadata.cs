@@ -1,11 +1,13 @@
-using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using MediaToolkit.Core;
 using MediaToolkit.Model;
 
 namespace MediaToolkit.Tasks
 {
+  /// <summary>
+  /// The task retrieves the file metadata using ffprobe.
+  /// </summary>
   public class FfTaskGetMetadata : FfProbeTaskBase<GetMetadataResult>
   {
     private readonly string _filePath;
@@ -22,7 +24,7 @@ namespace MediaToolkit.Tasks
         "-v",
         "quiet",
         "-print_format",
-        "xml=fully_qualified=1",
+        "json",
         "-show_format",
         "-show_streams",
         this._filePath
@@ -33,14 +35,14 @@ namespace MediaToolkit.Tasks
     public override async Task<GetMetadataResult> ExecuteCommandAsync(IFfProcess ffProcess)
     {
       var taskResult = await ffProcess.Run();
-      var serializer = new XmlSerializer(typeof(FfprobeType));
-      FfprobeType ffprobeType;
-      using(var stringReader = new StringReader(taskResult.Output))
-      {
-        ffprobeType = (FfprobeType)serializer.Deserialize(stringReader);
-      }
 
-      return new GetMetadataResult(ffprobeType);
+      var options = new JsonSerializerOptions
+      {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+      };
+      var ffProbeOutput = JsonSerializer.Deserialize<FfProbeOutput>(taskResult.Output, options);
+      var result = new GetMetadataResult(ffProbeOutput);
+      return result;
     }
   }
 }
