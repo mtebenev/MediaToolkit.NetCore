@@ -186,7 +186,125 @@ namespace MediaToolkit.Test.Tasks
       Assert.Equal("1209472", stream.BitRate);
       Assert.Equal("8", stream.BitsPerRawSample);
       Assert.Equal("23648", stream.NbFrames);
-      //Assert.Equal("", stream.);
+    }
+
+    [Fact]
+    public async Task Should_Deserialize_Audio_Stream()
+    {
+      var mockOutputReader = Substitute.For<IProcessStreamReader>();
+      var mockFfProcess = Substitute.For<IFfProcess>();
+      mockFfProcess.OutputReader.Returns(mockOutputReader);
+
+      var json =
+@"{
+  'streams': [
+    {
+      'sample_fmt': 'fltp',
+      'sample_rate': '48000',
+      'channels': 2,
+      'channel_layout': 'stereo',
+      'bits_per_sample': 11,
+      'bit_rate': '158337',
+      'max_bit_rate': '200000'
+    }
+  ]
+}";
+      mockOutputReader.ReadToEndAsync().Returns(json.Replace('\'', '\"'));
+      var task = new FfTaskGetMetadata(@"som_path");
+
+      var result = await task.ExecuteCommandAsync(mockFfProcess);
+
+      // Verify
+      var stream = result.Metadata.Streams[0];
+      Assert.Equal("fltp", stream.SampleFmt);
+      Assert.Equal("48000", stream.SampleRate);
+      Assert.Equal(2, stream.Channels);
+      Assert.Equal("stereo", stream.ChannelLayout);
+      Assert.Equal(11, stream.BitsPerSample);
+      Assert.Equal("158337", stream.BitRate);
+      Assert.Equal("200000", stream.MaxBitRate);
+    }
+
+    [Fact]
+    public async Task Should_Deserialize_Stream_Disposition()
+    {
+      var mockOutputReader = Substitute.For<IProcessStreamReader>();
+      var mockFfProcess = Substitute.For<IFfProcess>();
+      mockFfProcess.OutputReader.Returns(mockOutputReader);
+
+      var json =
+@"{
+  'streams': [
+    {
+      'disposition': {
+        'default': 1,
+        'dub': 2,
+        'original': 3,
+        'comment': 4,
+        'lyrics': 5,
+        'karaoke': 6,
+        'forced': 7,
+        'hearing_impaired': 8,
+        'visual_impaired': 9,
+        'clean_effects': 2,
+        'attached_pic': 3,
+        'timed_thumbnails': 4
+      }
+    }
+  ]
+}";
+      mockOutputReader.ReadToEndAsync().Returns(json.Replace('\'', '\"'));
+      var task = new FfTaskGetMetadata(@"som_path");
+
+      var result = await task.ExecuteCommandAsync(mockFfProcess);
+
+      // Verify
+      var disposition = result.Metadata.Streams[0].Disposition;
+      Assert.Equal(1, disposition.Default);
+      Assert.Equal(2, disposition.Dub);
+      Assert.Equal(3, disposition.Original);
+      Assert.Equal(4, disposition.Comment);
+      Assert.Equal(5, disposition.Lyrics);
+      Assert.Equal(6, disposition.Karaoke);
+      Assert.Equal(7, disposition.Forced);
+      Assert.Equal(8, disposition.HearingImpaired);
+      Assert.Equal(9, disposition.VisualImpaired);
+      Assert.Equal(2, disposition.CleanEffects);
+      Assert.Equal(3, disposition.AttachedPic);
+      Assert.Equal(4, disposition.TimedThumbnails);
+    }
+
+    [Fact]
+    public async Task Should_Deserialize_Stream_Tags()
+    {
+      var mockOutputReader = Substitute.For<IProcessStreamReader>();
+      var mockFfProcess = Substitute.For<IFfProcess>();
+      mockFfProcess.OutputReader.Returns(mockOutputReader);
+
+      var json =
+@"{
+  'streams': [
+    {
+      'tags': {
+          'language': 'eng',
+          'handler_name': 'Stereo'
+      }
+    }
+  ]
+}";
+      mockOutputReader.ReadToEndAsync().Returns(json.Replace('\'', '\"'));
+      var task = new FfTaskGetMetadata(@"som_path");
+
+      var result = await task.ExecuteCommandAsync(mockFfProcess);
+
+      // Verify
+      var expectedTags = new Dictionary<string, string>
+      {
+        { "language", "eng"},
+        { "handler_name", "Stereo"}
+      };
+
+      Assert.Equal(expectedTags, result.Metadata.Streams[0].Tags);
     }
   }
 }

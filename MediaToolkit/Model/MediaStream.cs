@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace MediaToolkit.Model
@@ -87,7 +88,6 @@ namespace MediaToolkit.Model
     public string NbFrames { get; set; }
 
     public Disposition Disposition { get; set; }
-    public StreamTags Tags { get; set; }
 
     [JsonPropertyName("sample_fmt")]
     public string SampleFmt { get; set; }
@@ -117,5 +117,7 @@ namespace MediaToolkit.Model
 
     [JsonPropertyName("color_primaries")]
     public string ColorPrimaries { get; set; }
+
+    public Dictionary<string, string> Tags { get; set; }
   }
 }
