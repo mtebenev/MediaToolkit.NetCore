@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace MediaToolkit.Core
 {
   /// <summary>
@@ -8,11 +10,11 @@ namespace MediaToolkit.Core
     /// <summary>
     /// Launches the ffmpeg
     /// </summary>
-    IFfProcess LaunchFfMpeg(string[] arguments);
+    IFfProcess LaunchFfMpeg(IEnumerable<string> arguments);
 
     /// <summary>
     /// Launches the ffprobe
     /// </summary>
-    IFfProcess LaunchFfProbe(string[] arguments);
+    IFfProcess LaunchFfProbe(IEnumerable<string> arguments);
   }
 }

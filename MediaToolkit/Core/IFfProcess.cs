@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Medallion.Shell.Streams;
 
 namespace MediaToolkit.Core
 {
@@ -8,8 +9,18 @@ namespace MediaToolkit.Core
   public interface IFfProcess
   {
     /// <summary>
-    /// Awaits for the process and returns standard output as string.
+    /// The task awaiting the process complete.
     /// </summary>
-    Task<FfTaskResult> Run();
+    Task Task { get; }
+
+    /// <summary>
+    /// The standard output.
+    /// </summary>
+    ProcessStreamReader OutputReader { get; }
+
+    /// <summary>
+    /// The standard error.
+    /// </summary>
+    ProcessStreamReader ErrorReader { get; }
   }
 }

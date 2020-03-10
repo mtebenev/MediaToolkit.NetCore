@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace MediaToolkit.Core
 {
   /// <summary>
@@ -8,13 +10,13 @@ namespace MediaToolkit.Core
     private readonly string _ffprobeFilePath = @"C:\ffmpeg\ffprobe.exe";
     private readonly string _ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
 
-    public IFfProcess LaunchFfMpeg(string[] arguments)
+    public IFfProcess LaunchFfMpeg(IEnumerable<string> arguments)
     {
       IFfProcess ffProcess = new FfProcess(this._ffmpegFilePath, arguments);
       return ffProcess;
     }
 
-    public IFfProcess LaunchFfProbe(string[] arguments)
+    public IFfProcess LaunchFfProbe(IEnumerable<string> arguments)
     {
       IFfProcess ffProcess = new FfProcess(this._ffprobeFilePath, arguments);
       return ffProcess;

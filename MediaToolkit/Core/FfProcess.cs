@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Medallion.Shell;
+using Medallion.Shell.Streams;
 
 namespace MediaToolkit.Core
 {
@@ -9,35 +11,65 @@ namespace MediaToolkit.Core
   /// </summary>
   internal class FfProcess : IFfProcess
   {
-    private string _ffToolFilePath;
-    private string[] _arguments;
+    private Command _command;
 
     /// <summary>
     /// Ctor.
     /// </summary>
-    public FfProcess(string ffprobeFilePath, string[] arguments)
+    public FfProcess(string ffToolPath, IEnumerable<string> arguments)
     {
-      this._ffToolFilePath = ffprobeFilePath;
-      this._arguments = arguments;
+      this._command = Command.Run(
+        ffToolPath,
+        arguments,
+        options =>
+        {
+          options.DisposeOnExit();
+        });
+
+      this.Task = Task.Run(async () =>
+      {
+        var commandResult = await this._command.Task;
+        if(!commandResult.Success)
+        {
+          var error = this._command.StandardError.ReadToEnd();
+          throw new InvalidOperationException(error);
+        }
+      });
     }
 
     /// <summary>
-    /// IFfProcess
+    /// IFfProcess.
     /// </summary>
-    public async Task<FfTaskResult> Run()
+    public Task Task { get; }
+
+    /// <summary>
+    /// IFfProcess.
+    /// </summary>
+    public ProcessStreamReader OutputReader => this._command.StandardOutput;
+
+    /// <summary>
+    /// IFfProcess.
+    /// </summary>
+    public ProcessStreamReader ErrorReader => this._command.StandardError;
+
+    /// <summary>
+    /// Use to read all the output stream with one call.
+    /// </summary>
+    public async Task<string> ReadOutputToEndAsync()
     {
-      var command = Command.Run(this._ffToolFilePath, this._arguments);
+      await this.Task;
+      var result = await this._command.StandardOutput.ReadToEndAsync();
+      return result;
+    }
 
-      var commandResult = await command.Task;
-      var output = await command.StandardOutput.ReadToEndAsync();
-      var error = await command.StandardError.ReadToEndAsync();
-
-      if(!commandResult.Success)
-      {
-        throw new InvalidOperationException(error);
-      }
-      
-      return new FfTaskResult(output, error);
+    /// <summary>
+    /// Use to read all the error stream with one call.
+    /// </summary>
+    public async Task<string> ReadErrorToEndAsync()
+    {
+      await this.Task;
+      var result = await this._command.StandardError.ReadToEndAsync();
+      return result;
     }
   }
 }

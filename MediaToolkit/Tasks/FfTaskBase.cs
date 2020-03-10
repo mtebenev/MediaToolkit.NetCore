@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediaToolkit.Core;
 using MediaToolkit.Services;
@@ -12,7 +13,7 @@ namespace MediaToolkit.Tasks
     /// <summary>
     /// Override to create the call parameters.
     /// </summary>
-    public abstract string[] CreateArguments();
+    public abstract IList<string> CreateArguments();
 
     /// <summary>
     /// Override to execute the command.
@@ -22,6 +23,6 @@ namespace MediaToolkit.Tasks
     /// <summary>
     /// Internal method for execution with the service instance.
     /// </summary>
-    internal abstract Task ExecuteAsync(FfService ffService);
+    internal abstract Task<TResult> ExecuteAsync(FfService ffService);
   }
 }

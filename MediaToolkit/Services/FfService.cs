@@ -29,7 +29,7 @@ namespace MediaToolkit.Services
       return result;
     }
 
-    public Task ExecuteAsync<TResult>(FfTaskBase<TResult> task)
+    public Task<TResult> ExecuteAsync<TResult>(FfTaskBase<TResult> task)
     {
       var result = task.ExecuteAsync(this);
       return result;
@@ -38,7 +38,7 @@ namespace MediaToolkit.Services
     /// <summary>
     /// Dispatcher for ffprobe tasks.
     /// </summary>
-    internal Task ExecuteAsync<TResult>(FfProbeTaskBase<TResult> task)
+    internal Task<TResult> ExecuteAsync<TResult>(FfProbeTaskBase<TResult> task)
     {
       var arguments = task.CreateArguments();
       var ffProcess = this._processFactory.LaunchFfProbe(arguments);
@@ -49,7 +49,7 @@ namespace MediaToolkit.Services
     /// <summary>
     /// Dispatcher for ffmpeg tasks.
     /// </summary>
-    internal Task ExecuteAsync<TResult>(FfMpegTaskBase<TResult> task)
+    internal Task<TResult> ExecuteAsync<TResult>(FfMpegTaskBase<TResult> task)
     {
       var arguments = task.CreateArguments();
       var ffProcess = this._processFactory.LaunchFfMpeg(arguments);

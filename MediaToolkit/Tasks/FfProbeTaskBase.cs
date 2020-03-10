@@ -8,7 +8,7 @@ namespace MediaToolkit.Tasks
   /// </summary>
   public abstract class FfProbeTaskBase<TResult> : FfTaskBase<TResult>
   {
-    internal override Task ExecuteAsync(FfService ffService)
+    internal override Task<TResult> ExecuteAsync(FfService ffService)
     {
       return ffService.ExecuteAsync(this);
     }
