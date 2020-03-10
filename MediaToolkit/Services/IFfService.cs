@@ -8,6 +8,6 @@ namespace MediaToolkit.Services
   /// </summary>
   public interface IFfService
   {
-    Task ExecuteAsync(FfTaskBase task);
+    Task ExecuteAsync<TResult>(FfTaskBase<TResult> task);
   }
 }

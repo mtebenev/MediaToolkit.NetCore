@@ -6,7 +6,7 @@ namespace MediaToolkit.Tasks
   /// <summary>
   /// The base class for all ffmpeg tasks.
   /// </summary>
-  public abstract class FfMpegTaskBase : FfTaskBase
+  public abstract class FfMpegTaskBase<TResult> : FfTaskBase<TResult>
   {
     internal override Task ExecuteAsync(FfService ffService)
     {

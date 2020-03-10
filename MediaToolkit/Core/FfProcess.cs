@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Medallion.Shell;
 
@@ -23,13 +24,20 @@ namespace MediaToolkit.Core
     /// <summary>
     /// IFfProcess
     /// </summary>
-    public async Task<string> Run()
+    public async Task<FfTaskResult> Run()
     {
-      var cmd = Command.Run(this._ffToolFilePath, this._arguments);
-      await cmd.Task;
-      var output = await cmd.StandardOutput.ReadToEndAsync();
+      var command = Command.Run(this._ffToolFilePath, this._arguments);
 
-      return output;
+      var commandResult = await command.Task;
+      var output = await command.StandardOutput.ReadToEndAsync();
+      var error = await command.StandardError.ReadToEndAsync();
+
+      if(!commandResult.Success)
+      {
+        throw new InvalidOperationException(error);
+      }
+      
+      return new FfTaskResult(output, error);
     }
   }
 }

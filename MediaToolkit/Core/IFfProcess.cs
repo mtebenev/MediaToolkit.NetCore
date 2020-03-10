@@ -10,6 +10,6 @@ namespace MediaToolkit.Core
     /// <summary>
     /// Awaits for the process and returns standard output as string.
     /// </summary>
-    Task<string> Run();
+    Task<FfTaskResult> Run();
   }
 }

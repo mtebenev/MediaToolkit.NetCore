@@ -7,7 +7,7 @@ namespace MediaToolkit.Tasks
   /// <summary>
   /// Common interface for FF tasks.
   /// </summary>
-  public abstract class FfTaskBase
+  public abstract class FfTaskBase<TResult>
   {
     /// <summary>
     /// Override to create the call parameters.
@@ -17,7 +17,7 @@ namespace MediaToolkit.Tasks
     /// <summary>
     /// Override to execute the command.
     /// </summary>
-    public abstract Task ExecuteCommandAsync(IFfProcess ffProcess);
+    public abstract Task<TResult> ExecuteCommandAsync(IFfProcess ffProcess);
 
     /// <summary>
     /// Internal method for execution with the service instance.

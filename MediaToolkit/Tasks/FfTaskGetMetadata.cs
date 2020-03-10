@@ -6,7 +6,7 @@ using MediaToolkit.Model;
 
 namespace MediaToolkit.Tasks
 {
-  public class FfTaskGetMetadata : FfProbeTaskBase
+  public class FfTaskGetMetadata : FfProbeTaskBase<GetMetadataResult>
   {
     private readonly string _filePath;
 
@@ -30,15 +30,17 @@ namespace MediaToolkit.Tasks
       return arguments;
     }
 
-    public override async Task ExecuteCommandAsync(IFfProcess ffProcess)
+    public override async Task<GetMetadataResult> ExecuteCommandAsync(IFfProcess ffProcess)
     {
-      var output = await ffProcess.Run();
+      var taskResult = await ffProcess.Run();
       var serializer = new XmlSerializer(typeof(FfprobeType));
       FfprobeType ffprobeType;
-      using(var stringReader = new StringReader(output))
+      using(var stringReader = new StringReader(taskResult.Output))
       {
         ffprobeType = (FfprobeType)serializer.Deserialize(stringReader);
       }
+
+      return new GetMetadataResult(ffprobeType);
     }
   }
 }

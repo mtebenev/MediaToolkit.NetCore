@@ -6,10 +6,12 @@ namespace MediaToolkit.Core
   internal class FfProcessFactory : IffProcessFactory
   {
     private readonly string _ffprobeFilePath = @"C:\ffmpeg\ffprobe.exe";
+    private readonly string _ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
 
     public IFfProcess LaunchFfMpeg(string[] arguments)
     {
-      throw new System.NotImplementedException();
+      IFfProcess ffProcess = new FfProcess(this._ffmpegFilePath, arguments);
+      return ffProcess;
     }
 
     public IFfProcess LaunchFfProbe(string[] arguments)
