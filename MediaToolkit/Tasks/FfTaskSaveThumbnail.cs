@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediaToolkit.Core;
 
@@ -27,7 +28,10 @@ namespace MediaToolkit.Tasks
       this._seekSpan = seekSpan;
     }
 
-    public override string[] CreateArguments()
+    /// <summary>
+    /// FfTaskBase.
+    /// </summary>
+    public override IList<string> CreateArguments()
     {
       var arguments = new[]
       {
@@ -52,7 +56,7 @@ namespace MediaToolkit.Tasks
     /// </summary>
     public override async Task<int> ExecuteCommandAsync(IFfProcess ffProcess)
     {
-      await ffProcess.Run();
+      await ffProcess.Task;
       return 0;
     }
   }

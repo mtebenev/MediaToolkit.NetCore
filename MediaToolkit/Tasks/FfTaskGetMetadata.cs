@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MediaToolkit.Core;
@@ -17,7 +18,7 @@ namespace MediaToolkit.Tasks
       this._filePath = filePath;
     }
 
-    public override string[] CreateArguments()
+    public override IList<string> CreateArguments()
     {
       var arguments = new[]
       {
@@ -34,13 +35,13 @@ namespace MediaToolkit.Tasks
 
     public override async Task<GetMetadataResult> ExecuteCommandAsync(IFfProcess ffProcess)
     {
-      var taskResult = await ffProcess.Run();
-
+      await ffProcess.Task;
       var options = new JsonSerializerOptions
       {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
       };
-      var ffProbeOutput = JsonSerializer.Deserialize<FfProbeOutput>(taskResult.Output, options);
+      var output = await ffProcess.OutputReader.ReadToEndAsync();
+      var ffProbeOutput = JsonSerializer.Deserialize<FfProbeOutput>(output, options);
       var result = new GetMetadataResult(ffProbeOutput);
       return result;
     }
