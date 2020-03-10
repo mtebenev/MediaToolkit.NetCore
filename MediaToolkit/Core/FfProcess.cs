@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Medallion.Shell;
-using Medallion.Shell.Streams;
 
 namespace MediaToolkit.Core
 {
@@ -12,6 +11,8 @@ namespace MediaToolkit.Core
   internal class FfProcess : IFfProcess
   {
     private Command _command;
+    private readonly StreamReaderWrapper _outputReader;
+    private readonly StreamReaderWrapper _errorReader;
 
     /// <summary>
     /// Ctor.
@@ -25,6 +26,8 @@ namespace MediaToolkit.Core
         {
           options.DisposeOnExit();
         });
+      this._outputReader = new StreamReaderWrapper(this._command.StandardOutput);
+      this._errorReader = new StreamReaderWrapper(this._command.StandardError);
 
       this.Task = Task.Run(async () =>
       {
@@ -45,12 +48,12 @@ namespace MediaToolkit.Core
     /// <summary>
     /// IFfProcess.
     /// </summary>
-    public ProcessStreamReader OutputReader => this._command.StandardOutput;
+    public IProcessStreamReader OutputReader => this._outputReader;
 
     /// <summary>
     /// IFfProcess.
     /// </summary>
-    public ProcessStreamReader ErrorReader => this._command.StandardError;
+    public IProcessStreamReader ErrorReader => this._errorReader;
 
     /// <summary>
     /// Use to read all the output stream with one call.

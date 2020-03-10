@@ -16,11 +16,11 @@ namespace MediaToolkit.Core
     /// <summary>
     /// The standard output.
     /// </summary>
-    ProcessStreamReader OutputReader { get; }
+    IProcessStreamReader OutputReader { get; }
 
     /// <summary>
     /// The standard error.
     /// </summary>
-    ProcessStreamReader ErrorReader { get; }
+    IProcessStreamReader ErrorReader { get; }
   }
 }
