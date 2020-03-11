@@ -13,8 +13,9 @@ namespace SampleApp
   {
     static async Task Main(string[] args)
     {
+      var ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
       var serviceProvider = new ServiceCollection()
-        .AddMediaToolkit()
+        .AddMediaToolkit(ffmpegFilePath)
         .BuildServiceProvider();
 
       var videoPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\BigBunny.m4v");

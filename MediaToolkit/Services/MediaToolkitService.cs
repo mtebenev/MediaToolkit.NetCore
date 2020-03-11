@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 using MediaToolkit.Core;
 using MediaToolkit.Tasks;
@@ -22,9 +23,14 @@ namespace MediaToolkit.Services
     /// <summary>
     /// Factory method.
     /// </summary>
-    public static IMediaToolkitService CreateInstance()
+    public static IMediaToolkitService CreateInstance(string ffMpegPath)
     {
-      var ffProcessFactory = new FfProcessFactory();
+      var options = new MediaToolkitOptions
+      {
+        FfMpegPath = ffMpegPath
+      };
+      var fileSystem = new FileSystem();
+      var ffProcessFactory = new FfProcessFactory(options, fileSystem);
       var result = new MediaToolkitService(ffProcessFactory);
       return result;
     }
