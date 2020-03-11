@@ -5,10 +5,71 @@ This is port of MediaToolkit to .Net Core
 ---
 
 Notable changes are:
-1. Projects are compiled with VS2017 using .Net Core
+1. Projects are compiled with VS2019 using .Net Core
 2. ffmpeg.exe is not embedded in library binaries, you should pass a path to ffmpeg.exe explicitly in constructor
 
-From MediaToolkit
+The API changes for 0.2.0 Preview
+---
+
+Engine class becomes obsolete.
+The MediaToolkit now exposes injectable **IMediaToolkitService**.
+
+Instantiating the service
+---
+
+Using .Net Core dependency injection:
+```csharp
+  var ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
+  var serviceProvider = new ServiceCollection()
+    .AddMediaToolkit(ffmpegFilePath)
+    .BuildServiceProvider();
+...
+  var service = serviceProvider.GetService<IMediaToolkitService>();
+```
+
+Directly:
+```csharp
+  var ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
+  var service = MediaToolkitService.CreateInstance(ffmpegFilePath);
+```
+
+Getting the metadata
+---
+
+This task uses ffprobe to extract the metadata.
+```csharp
+  var metadataTask = new FfTaskGetMetadata(videoPath);
+  var metadataResult = await service.ExecuteAsync(metadataTask);
+```
+
+Saving the thumbnail in a file
+---
+
+```csharp
+  var saveThumbnailTask = new FfTaskSaveThumbnail(
+    videoPath,
+    thumbnailPath,
+    TimeSpan.FromSeconds(10)
+  );
+  await service.ExecuteAsync(saveThumbnailTask);
+```
+
+Getting the thumbnail data
+---
+This task returns byte[] with the thumbnail data instead of saving it to a file.
+You can pass null to the frame size to let ffmpeg guess the frame dimensions.
+
+```csharp
+  var getThumbnailTask = new FfTaskGetThumbnail(
+    videoPath,
+    TimeSpan.FromSeconds(10),
+    new FrameSize(100, 100)
+  );
+  await service.ExecuteAsync(getThumbnailTask);
+```
+
+
+...From MediaToolkit (original)
 ---
 
 MediaToolkit provides a straightforward interface for handling media data, making tasks such as converting, slicing and editing both audio and video completely effortless.

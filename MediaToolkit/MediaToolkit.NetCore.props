@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageVersion>0.1.0-preview</PackageVersion>
+    <PackageVersion>0.2.0-preview</PackageVersion>
     <PackageProjectUrl>https://github.com/mtebenev/MediaToolkit</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/mtebenev/MediaToolkit/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Maxim Tebenev</Authors>
-    <Copyright>Maxim Tebenev, 2018</Copyright>
+    <Copyright>Maxim Tebenev, Fatih Aydin, 2018-2020</Copyright>
     <PackageTags>MediaToolkit, Media, Video, Audio, converter, ffmpeg, flv, mp4, flash, h264, hd, 720p, 1080p, dvd</PackageTags>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DebugType>portable</DebugType>
