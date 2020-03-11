@@ -24,7 +24,7 @@ namespace MediaToolkit.Test.Services
       mockProcessFactory.LaunchFfProbe(mockArgs).Returns(mockFfProcess);
       mockFfProbeTask.CreateArguments().Returns(mockArgs);
 
-      var service = new FfService(mockProcessFactory);
+      var service = new MediaToolkitService(mockProcessFactory);
       await service.ExecuteAsync(mockFfProbeTask);
 
       mockProcessFactory.Received().LaunchFfProbe(mockArgs);
@@ -46,7 +46,7 @@ namespace MediaToolkit.Test.Services
       mockProcessFactory.LaunchFfMpeg(mockArgs).Returns(mockFfProcess);
       mockFfMpegTask.CreateArguments().Returns(mockArgs);
 
-      var service = new FfService(mockProcessFactory);
+      var service = new MediaToolkitService(mockProcessFactory);
       await service.ExecuteAsync(mockFfMpegTask);
 
       mockProcessFactory.Received().LaunchFfMpeg(mockArgs);

@@ -7,14 +7,14 @@ namespace MediaToolkit.Services
   /// <summary>
   /// The FF service implementation.
   /// </summary>
-  public class FfService : IFfService
+  public class MediaToolkitService : IMediaToolkitService
   {
     private readonly IffProcessFactory _processFactory;
 
     /// <summary>
     /// Ctor.
     /// </summary>
-    internal FfService(IffProcessFactory processFactory)
+    public MediaToolkitService(IffProcessFactory processFactory)
     {
       this._processFactory = processFactory;
     }
@@ -22,10 +22,10 @@ namespace MediaToolkit.Services
     /// <summary>
     /// Factory method.
     /// </summary>
-    public static IFfService CreateInstance()
+    public static IMediaToolkitService CreateInstance()
     {
       var ffProcessFactory = new FfProcessFactory();
-      var result = new FfService(ffProcessFactory);
+      var result = new MediaToolkitService(ffProcessFactory);
       return result;
     }
 

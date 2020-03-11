@@ -8,7 +8,7 @@ namespace MediaToolkit.Tasks
   /// </summary>
   public abstract class FfMpegTaskBase<TResult> : FfTaskBase<TResult>
   {
-    internal override Task<TResult> ExecuteAsync(FfService ffService)
+    internal override Task<TResult> ExecuteAsync(MediaToolkitService ffService)
     {
       return ffService.ExecuteAsync(this);
     }

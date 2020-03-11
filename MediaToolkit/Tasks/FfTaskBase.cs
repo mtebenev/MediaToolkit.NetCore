@@ -23,6 +23,6 @@ namespace MediaToolkit.Tasks
     /// <summary>
     /// Internal method for execution with the service instance.
     /// </summary>
-    internal abstract Task<TResult> ExecuteAsync(FfService ffService);
+    internal abstract Task<TResult> ExecuteAsync(MediaToolkitService ffService);
   }
 }

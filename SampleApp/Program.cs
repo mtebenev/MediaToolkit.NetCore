@@ -1,9 +1,11 @@
 using System;
 using System.IO;
-using System.IO.Abstractions;
+using System.Text.Json;
 using System.Threading.Tasks;
 using MediaToolkit;
-using MediaToolkit.Model;
+using MediaToolkit.Services;
+using MediaToolkit.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SampleApp
 {
@@ -11,16 +13,25 @@ namespace SampleApp
   {
     static async Task Main(string[] args)
     {
-      // Note: assuming that launching from VS debug and current directory is MediaToolkit\MediaToolkit src\SampleApp\bin\Debug\netcoreapp2.0
+      var serviceProvider = new ServiceCollection()
+        .AddMediaToolkit()
+        .BuildServiceProvider();
+
       var videoPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\BigBunny.m4v");
-      FfprobeType metadata;
 
-      using(var engine = new Engine(@"C:\ffmpeg\FFmpeg.exe", new FileSystem()))
-      {
-        metadata = await engine.GetMetadataAsync(videoPath);
-      }
+      // Get metadata
+      var service = serviceProvider.GetService<IMediaToolkitService>();
+      var metadataTask = new FfTaskGetMetadata(videoPath);
+      var metadataResult = await service.ExecuteAsync(metadataTask);
 
-      Console.WriteLine(metadata.Format.Duration);
+      Console.WriteLine("Get metadata: \n");
+      Console.Write(JsonSerializer.Serialize(metadataResult.Metadata));
+      Console.WriteLine("\n");
+
+      Console.WriteLine("Save thumbnail: \n");
+      var thumbnailPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\thumbnail.jpeg");
+      var saveThumbnailTask = new FfTaskSaveThumbnail(videoPath, thumbnailPath, TimeSpan.FromSeconds(10));
+      await service.ExecuteAsync(saveThumbnailTask);
     }
   }
 }

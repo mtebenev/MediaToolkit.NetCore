@@ -5,7 +5,7 @@ namespace MediaToolkit.Core
   /// <summary>
   /// Factory service for FF process
   /// </summary>
-  internal interface IffProcessFactory
+  public interface IffProcessFactory
   {
     /// <summary>
     /// Launches the ffmpeg
