@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using Medallion.Shell;
 using MediaToolkit.Model;
 using MediaToolkit.Options;
 using MediaToolkit.Properties;
@@ -16,6 +13,7 @@ namespace MediaToolkit
 {
   /// -------------------------------------------------------------------------------------------------
   /// <summary>   An engine. This class cannot be inherited. </summary>
+  [Obsolete("Use the new MediaToolkit service.")]
   public class Engine : EngineBase
   {
     /// <summary>
@@ -81,34 +79,20 @@ namespace MediaToolkit
       this.StartFFmpegProcess(engineParameters);
     }
 
+    /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    /// Retrieves metadata using ffprobe
+    ///     <para> Retrieve media metadata</para>
     /// </summary>
-    public async Task<FfprobeType> GetMetadataAsync(string filePath)
+    /// <param name="inputFile">    Retrieves the metadata for the input file. </param>
+    public void GetMetadata(MediaFile inputFile)
     {
-      var arguments = new Object[]
+      EngineParameters engineParams = new EngineParameters
       {
-                "-v",
-                "quiet",
-                "-print_format",
-                "xml=fully_qualified=1",
-                "-show_format",
-                "-show_streams",
-                filePath
+        InputFile = inputFile,
+        Task = FFmpegTask.GetMetaData
       };
 
-      var cmd = Command.Run(FfprobeFilePath, arguments);
-      await cmd.Task;
-
-      var output = await cmd.StandardOutput.ReadToEndAsync();
-      var serializer = new XmlSerializer(typeof(FfprobeType));
-      FfprobeType ffprobeType;
-      using(var stringReader = new StringReader(output))
-      {
-        ffprobeType = (FfprobeType)serializer.Deserialize(stringReader);
-      }
-
-      return ffprobeType;
+      this.FFmpegEngine(engineParams);
     }
 
     /// <summary>   Retrieve a thumbnail image from a video file. </summary>
