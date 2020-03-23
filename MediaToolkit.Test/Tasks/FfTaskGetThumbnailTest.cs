@@ -13,19 +13,54 @@ namespace MediaToolkit.Test.Tasks
     [Fact]
     public void Should_Add_Frame_Size_Arguments()
     {
-      var task = new FfTaskGetThumbnail(@"c:\some\path", TimeSpan.FromSeconds(15), new FrameSize(100, 200));
+      var options = new GetThumbnailOptions
+      {
+        FrameSize = new FrameSize(100, 200),
+        SeekSpan = TimeSpan.FromSeconds(15)
+      };
+
+      var task = new FfTaskGetThumbnail(@"c:\some\path", options);
       var arguments = task.CreateArguments();
 
-      Assert.Equal(@"-hide_banner -loglevel info -ss 15 -i c:\some\path -t 1 -f gif -vframes 1 -s 100x200 -", String.Join(' ', arguments));
+      Assert.Contains("-s 100x200", String.Join(' ', arguments));
     }
 
     [Fact]
-    public void Should_Use_Default_Frame_Size()
+    public void Should_Add_Output_format_Arguments()
     {
-      var task = new FfTaskGetThumbnail(@"c:\some\path", TimeSpan.FromSeconds(15), null);
+      var options = new GetThumbnailOptions
+      {
+        OutputFormat = OutputFormat.Gif
+      };
+
+      var task = new FfTaskGetThumbnail(@"c:\some\path", options);
       var arguments = task.CreateArguments();
 
-      Assert.Equal(@"-hide_banner -loglevel info -ss 15 -i c:\some\path -t 1 -f gif -vframes 1 -", String.Join(' ', arguments));
+      Assert.Contains("-f gif", String.Join(' ', arguments));
+    }
+
+    [Fact]
+    public void Should_Add_Pixel_format_Arguments()
+    {
+      var options = new GetThumbnailOptions
+      {
+        PixelFormat = PixelFormat.Gray
+      };
+
+      var task = new FfTaskGetThumbnail(@"c:\some\path", options);
+      var arguments = task.CreateArguments();
+
+      Assert.Contains("-pix_fmt gray", String.Join(' ', arguments));
+    }
+
+    [Fact]
+    public void Should_Generate_Default_Arguments()
+    {
+      var task = new FfTaskGetThumbnail(@"c:\some\path", new GetThumbnailOptions());
+      var arguments = task.CreateArguments();
+
+      var args = String.Join(' ', arguments);
+      Assert.Equal(@"-hide_banner -loglevel info -ss 0 -i c:\some\path -t 1 -f rawvideo -vframes 1 -", String.Join(' ', arguments));
     }
 
     [Fact]
@@ -39,7 +74,11 @@ namespace MediaToolkit.Test.Tasks
       using(var ms = new MemoryStream(new byte[] { 10, 20, 30 }))
       {
         mockOutputReader.BaseStream.Returns(ms);
-        var task = new FfTaskGetThumbnail(@"c:\some\path", TimeSpan.FromSeconds(15), null);
+        var options = new GetThumbnailOptions
+        {
+          SeekSpan = TimeSpan.FromSeconds(15)
+        };
+        var task = new FfTaskGetThumbnail(@"c:\some\path", options);
         result = await task.ExecuteCommandAsync(mockFfProcess);
       }
 

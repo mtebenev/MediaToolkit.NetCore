@@ -12,20 +12,17 @@ namespace MediaToolkit.Tasks
   public class FfTaskGetThumbnail : FfMpegTaskBase<GetThumbnailResult>
   {
     private readonly string _inputFilePath;
-    private readonly TimeSpan _seekSpan;
-    private readonly FrameSize _frameSize;
+    private readonly GetThumbnailOptions _options;
 
     /// <summary>
     /// Ctor.
     /// </summary>
     /// <param name="inputFilePath">Full path to the input video file.</param>
-    /// <param name="seekSpan">The frame timespan.</param>
-    /// <param name="frameSize">The frame size. Pass null to let ffmpeg guess the frame size.</param>
-    public FfTaskGetThumbnail(string inputFilePath, TimeSpan seekSpan, FrameSize frameSize)
+    /// <param name="options">The task options.</param>
+    public FfTaskGetThumbnail(string inputFilePath, GetThumbnailOptions options)
     {
       this._inputFilePath = inputFilePath;
-      this._seekSpan = seekSpan;
-      this._frameSize = frameSize;
+      this._options = options;
     }
 
     public override IList<string> CreateArguments()
@@ -36,21 +33,31 @@ namespace MediaToolkit.Tasks
         "-loglevel",
         "info",
         "-ss",
-        this._seekSpan.TotalSeconds.ToString(),
+        this._options.SeekSpan.TotalSeconds.ToString(),
         "-i",
         $@"{this._inputFilePath}",
         "-t",
-        "1",
-        "-f",
-        "gif",
-        "-vframes",
         "1"
       };
 
-      if(this._frameSize != null)
+      arguments.Add("-f");
+      arguments.Add(String.IsNullOrEmpty(this._options.OutputFormat)
+        ? OutputFormat.RawVideo
+        : this._options.OutputFormat);
+
+      if(!String.IsNullOrEmpty(this._options.PixelFormat))
+      {
+        arguments.Add("-pix_fmt");
+        arguments.Add(this._options.PixelFormat);
+      }
+
+      arguments.Add("-vframes");
+      arguments.Add("1");
+
+      if(this._options.FrameSize != null)
       {
         arguments.Add("-s");
-        arguments.Add(this._frameSize.ToString());
+        arguments.Add(this._options.FrameSize.ToString());
       }
 
       arguments.Add("-");

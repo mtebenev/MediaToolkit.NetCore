@@ -60,10 +60,15 @@ This task returns byte[] with the thumbnail data instead of saving it to a file.
 You can pass null to the frame size to let ffmpeg guess the frame dimensions.
 
 ```csharp
+  var options = new GetThumbnailOptions
+  {
+    SeekSpan = TimeSpan.FromSeconds(10),
+    OutputFormat = OutputFormat.Gif,
+    PixelFormat = PixelFormat.Gray
+  };
   var getThumbnailTask = new FfTaskGetThumbnail(
     videoPath,
-    TimeSpan.FromSeconds(10),
-    new FrameSize(100, 100)
+    options
   );
   await service.ExecuteAsync(getThumbnailTask);
 ```
