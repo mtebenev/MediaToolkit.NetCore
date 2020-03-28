@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageVersion>0.2.0-preview</PackageVersion>
+    <PackageVersion>0.2.1-preview</PackageVersion>
     <PackageProjectUrl>https://github.com/mtebenev/MediaToolkit</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Maxim Tebenev</Authors>
