@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MediaToolkit;
@@ -13,12 +14,24 @@ namespace SampleApp
   {
     static async Task Main(string[] args)
     {
-      var ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
-      var serviceProvider = new ServiceCollection()
-        .AddMediaToolkit(ffmpegFilePath)
-        .BuildServiceProvider();
-
+      // Note: this sample assumes that under Windows we run the app with Visual Studio.
+      // Under Linux we use vscode
+      string ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
+      string ffprobeFilePath = null;
       var videoPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\BigBunny.m4v");
+      var thumbnailPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\thumbnail.jpeg");
+
+      if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      {
+        ffmpegFilePath = @"/usr/bin/ffmpeg";
+        ffprobeFilePath = @"/usr/bin/ffprobe";
+        videoPath = Path.GetFullPath(@"../MediaToolkit.Test/TestVideo/BigBunny.m4v");
+        thumbnailPath = Path.GetFullPath(@"../MediaToolkit.Test/TestVideo/thumbnail.jpeg");
+      }
+
+      var serviceProvider = new ServiceCollection()
+        .AddMediaToolkit(ffmpegFilePath, ffprobeFilePath)
+        .BuildServiceProvider();
 
       // Get metadata
       var service = serviceProvider.GetService<IMediaToolkitService>();
@@ -30,7 +43,6 @@ namespace SampleApp
       Console.WriteLine("\n");
 
       Console.WriteLine("Save thumbnail: \n");
-      var thumbnailPath = Path.GetFullPath(@"..\..\..\..\MediaToolkit.Test\TestVideo\thumbnail.jpeg");
       var saveThumbnailTask = new FfTaskSaveThumbnail(videoPath, thumbnailPath, TimeSpan.FromSeconds(10));
       await service.ExecuteAsync(saveThumbnailTask);
     }

@@ -22,7 +22,9 @@ namespace MediaToolkit.Core
 
       this._ffmpegFilePath = options.FfMpegPath;
       var ffmpegDirectoryPath = fileSystem.FileInfo.FromFileName(options.FfMpegPath).DirectoryName;
-      this._ffprobeFilePath = fileSystem.Path.Combine(ffmpegDirectoryPath, "ffprobe.exe");
+      this._ffprobeFilePath = string.IsNullOrEmpty(options.FfProbePath)
+        ? fileSystem.Path.Combine(ffmpegDirectoryPath, "ffprobe.exe")
+        : options.FfProbePath;
 
       EnsureFFmpegFileExists(fileSystem);
     }

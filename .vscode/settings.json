@@ -1,0 +1,12 @@
+{
+    "files.watcherExclude": {
+        "**/.git/": true,
+        "**/bin/**": true,
+        "**/obj/**": true
+    },
+    "files.exclude": {
+        "**/bin/": true,
+        "**/obj/": true
+    },
+    "editor.tabSize": 2
+}

@@ -12,7 +12,7 @@ namespace MediaToolkit
     /// <summary>
     /// Adds the MediaToolkit to the service collection.
     /// </summary>
-    public static IServiceCollection AddMediaToolkit(this IServiceCollection services, string ffmpegFilePath)
+    public static IServiceCollection AddMediaToolkit(this IServiceCollection services, string ffmpegFilePath, string ffprobeFilePath = null)
     {
       if(services == null)
       {
@@ -23,6 +23,11 @@ namespace MediaToolkit
       {
         FfMpegPath = ffmpegFilePath
       };
+
+      if(!string.IsNullOrEmpty(ffprobeFilePath))
+      {
+        options.FfProbePath = ffprobeFilePath;
+      }
 
       services.TryAddSingleton<IFileSystem, FileSystem>();
       services.AddSingleton(options);
