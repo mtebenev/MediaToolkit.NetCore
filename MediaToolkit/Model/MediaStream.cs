@@ -75,7 +75,7 @@ namespace MediaToolkit.Model
     public string StartTime { get; set; }
 
     [JsonPropertyName("duration_ts")]
-    public int DurationTs { get; set; }
+    public long DurationTs { get; set; }
     public string Duration { get; set; }
 
     [JsonPropertyName("bit_rate")]
